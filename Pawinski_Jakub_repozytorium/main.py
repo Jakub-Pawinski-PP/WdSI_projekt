@@ -1,9 +1,74 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2
 import os
-import random
-from sklearn.ensemble import RandomForestClassifier
-import pandas
-import PIL.Image as Image
-from lxml import etree
+from detecto import core, utils, visualize
+import numpy as np
+
+#sciezka calego projektu
+project_path = os.path.dirname(os.getcwd())
+
+#sciezka zbioru treningowego
+train_path = os.path.join(project_path, 'train')
+train_annotations_path = os.path.join(train_path, 'annotations')
+train_images_path = os.path.join(train_path, 'images')
+train_annotations_files = os.listdir(train_annotations_path)
+train_images_files = os.listdir(train_images_path)
+
+#sciezka zbioru testowego
+test_path = os.path.join(project_path, 'test')
+test_annotations_path = os.path.join(test_path, 'annotations')
+test_images_path = os.path.join(test_path, 'images')
+test_annotations_files = os.listdir(test_annotations_path)
+test_images_files = os.listdir(test_images_path)
+
+#implementacja modelu sieci neuronowej i podanie slow kluczowych
+#dataset_train = core.Dataset(train_annotations_path, train_images_path)
+#model = core.Model(['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
+
+#trenowanie zbioru
+#model.fit(dataset_train, epochs=10)
+
+#wczytanie modelu sieci
+model = core.Model.load(project_path+'/'+'model_weights.pth', ['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
+
+#wywolanie obrazu ze zbioru treningowego celem sprawdzenia mozliwosci oznaczenia znakow
+image_train = utils.read_image(train_images_path+'/'+'road101.png')
+predictions_train = model.predict(image_train)
+
+labels_train, boxes_train, scores_train = predictions_train
+
+#filtracja wynikow
+train_filter = np.where(scores_train > 0.9)
+scores_train_filter = scores_train[train_filter]
+boxes_train_filter = boxes_train[train_filter]
+num_list_train = list(train_filter[0])
+labels_train_filter = []
+
+for i in num_list_train:
+    labels_train_filter.append(labels_train[i])
+
+#wyplotowanie obrazu, rozpoznanie typu, podanie wspolrzednych oraz prawdopodobienstwa
+print(labels_train_filter)
+print(boxes_train_filter)
+print(scores_train_filter)
+visualize.show_labeled_image(image_train, boxes_train_filter, labels_train_filter)
+
+#wywolanie obrazu ze zbioru testowego celem sprawdzenia mozliwości oznaczenia znakow
+image_test = utils.read_image(test_images_path+'/'+'road859.png')
+predictions_test = model.predict(image_test)
+
+labels_test, boxes_test, scores_test = predictions_test
+
+#filtracja wynikow
+test_filter = np.where(scores_test > 0.9)
+scores_test_filter = scores_test[test_filter]
+boxes_test_filter = boxes_test[test_filter]
+num_list_test = list(test_filter[0])
+labels_test_filter = []
+
+for j in num_list_test:
+    labels_test_filter.append(labels_test[j])
+
+#wyplotowanie obrazu, rozpoznanie typu, podanie wspolrzednych oraz prawdopodobienstwa
+print(labels_test_filter)
+print(boxes_test_filter)
+print(scores_test_filter)
+visualize.show_labeled_image(image_test, boxes_test_filter, labels_test_filter)
