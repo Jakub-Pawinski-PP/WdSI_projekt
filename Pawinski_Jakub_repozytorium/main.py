@@ -27,10 +27,10 @@ test_images_files = os.listdir(test_images_path)
 #model.fit(dataset_train, epochs=10)
 
 #wczytanie modelu sieci
-model = core.Model.load(project_path+'/'+'model_weights.pth', ['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
+model = core.Model.load(project_path + '/' + 'model_weights.pth', ['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
 
 #wywolanie obrazu ze zbioru treningowego celem sprawdzenia mozliwosci oznaczenia znakow
-image_train = utils.read_image(train_images_path+'/'+'road101.png')
+image_train = utils.read_image(train_images_path + '/' + 'road101.png')
 predictions_train = model.predict(image_train)
 
 labels_train, boxes_train, scores_train = predictions_train
@@ -52,7 +52,7 @@ print(scores_train_filter)
 visualize.show_labeled_image(image_train, boxes_train_filter, labels_train_filter)
 
 #wywolanie obrazu ze zbioru testowego celem sprawdzenia mozliwości oznaczenia znakow
-image_test = utils.read_image(test_images_path+'/'+'road859.png')
+image_test = utils.read_image(test_images_path + '/' + 'road861.png')
 predictions_test = model.predict(image_test)
 
 labels_test, boxes_test, scores_test = predictions_test
@@ -72,3 +72,31 @@ print(labels_test_filter)
 print(boxes_test_filter)
 print(scores_test_filter)
 visualize.show_labeled_image(image_test, boxes_test_filter, labels_test_filter)
+
+#detekcja znakow ograniczenia predkosci
+def detect():
+    #petla wczytujaca obrazy ze zbioru testowego
+    for detection in test_images_files:
+        image_detect = utils.read_image(test_images_path + '/' + detection)
+        predictions_detect = model.predict(image_detect)
+
+        labels_detect, boxes_detect, scores_detect = predictions_detect
+
+        #filtracja wynikow
+        detect_filter = np.where(scores_detect > 0.9)
+        scores_detect_filter = scores_detect[detect_filter]
+        boxes_detect_filter = boxes_detect[detect_filter]
+        num_list_detect = list(detect_filter[0])
+        labels_detect_filter = []
+
+        for k in num_list_detect:
+            labels_detect_filter.append(labels_detect[k])
+
+        #podanie nazwy obrazu, ilosci wykrytych obiektow oraz ich wspolrzednych
+        print(detection)
+        print(len(labels_detect_filter))
+        print(boxes_detect_filter)
+
+x = input()
+if x == "detect":
+    detect()
