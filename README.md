@@ -105,6 +105,10 @@ model = core.Model.load(project_path + '/' + 'model_weights.pth', ['speedlimit',
 
 Sieć ta została wytrenowana z czasem ok. pół godziny (10 epochs x 3 min), czas trwania widoczny jest w pliku road_signs_detection.ipynb.
 
+# Uwaga
+
+W związku z sugestiami poniższe dwa akapity dotyczące testów poprawności implementacji w pliku main.py są obecnie zakomentowane.
+
 # Testy poprawności implementacji - zbiór treningowy
 
 Dla sprawdzenia poprawności stworzonej sieci należy przeprowadzić szybki test detekcji obiektów na zdjęciu. Do tego celu służy poniższy kod:
@@ -190,8 +194,9 @@ def detect():
             labels_detect_filter.append(labels_detect[k])
 
         #podanie nazwy obrazu, ilosci wykrytych obiektow oraz ich wspolrzednych
+        number_of_detected = len(labels_detect_filter)
         print(detection)
-        print(len(labels_detect_filter))
+        print(number_of_detected)
         print(boxes_detect_filter)        
 ```
 
