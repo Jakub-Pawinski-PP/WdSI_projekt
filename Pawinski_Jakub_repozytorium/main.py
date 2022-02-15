@@ -26,9 +26,13 @@ test_images_files = os.listdir(test_images_path)
 #trenowanie zbioru
 #model.fit(dataset_train, epochs=10)
 
+#zachowanie modelu sieci
+#model.save('model_weights.pth')
+
 #wczytanie modelu sieci
 model = core.Model.load(project_path + '/' + 'model_weights.pth', ['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
 
+"""
 #wywolanie obrazu ze zbioru treningowego celem sprawdzenia mozliwosci oznaczenia znakow
 image_train = utils.read_image(train_images_path + '/' + 'road101.png')
 predictions_train = model.predict(image_train)
@@ -72,6 +76,7 @@ print(labels_test_filter)
 print(boxes_test_filter)
 print(scores_test_filter)
 visualize.show_labeled_image(image_test, boxes_test_filter, labels_test_filter)
+"""
 
 #detekcja znakow ograniczenia predkosci
 def detect():
@@ -93,8 +98,9 @@ def detect():
             labels_detect_filter.append(labels_detect[k])
 
         #podanie nazwy obrazu, ilosci wykrytych obiektow oraz ich wspolrzednych
+        number_of_detected = len(labels_detect_filter)
         print(detection)
-        print(len(labels_detect_filter))
+        print(number_of_detected)
         print(boxes_detect_filter)
 
 x = input()
