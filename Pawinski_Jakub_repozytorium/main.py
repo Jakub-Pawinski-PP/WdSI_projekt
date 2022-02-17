@@ -2,6 +2,31 @@ import os
 from detecto import core, utils, visualize
 import numpy as np
 
+# TODO Jakość kodu i raport (4/4)
+
+# TODO Plik main.py powinien sie znajdowac w glownym katalogu repozytrium.
+# TODO Po uruchomieniu projekt powinien przeprowadzac uczenie, a nastepnie detekcje obiektow.
+# TODO Projekty sa sprawdzane automatycznie, wiec wszystkie operacje powinny sie odbywac za pomoca uruchomienia pliku main.py.
+
+# TODO Skuteczność klasyfikacji 0.0 (0/4)
+# TODO [0.00, 0.50) - 0.0
+# TODO [0.50, 0.55) - 0.5
+# TODO [0.55, 0.60) - 1.0
+# TODO [0.60, 0.65) - 1.5
+# TODO [0.65, 0.70) - 2.0
+# TODO [0.70, 0.75) - 2.5
+# TODO [0.75, 0.80) - 3.0
+# TODO [0.80, 0.85) - 3.5
+# TODO [0.85, 1.00) - 4.0
+
+# stderr:
+# python3: can't open file 'main.py': [Errno 2] No such file or directory
+
+# TODO Skuteczność detekcji 0.0 (0/6) (0/2)
+
+# TODO max(0, 0+0) = 0
+
+
 #sciezka calego projektu
 project_path = os.path.dirname(os.getcwd())
 
