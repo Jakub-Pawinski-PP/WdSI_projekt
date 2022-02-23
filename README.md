@@ -1,5 +1,5 @@
 # Wprowadzenie
-Projekt na laboratorium Wprowadzenia do Sztucznej Inteligencji: system wykrywający znaki drogowe na zdjęciach.
+Projekt na laboratorium Wprowadzenia do Sztucznej Inteligencji: system wykrywający znaki ograniczenia prędkości drogowych na zdjęciach.
 
 # Objaśnienie koncepcji
 Projekt powstał z użyciem biblioteki Detecto, która to pozwala stworzyć sieć neuronową na podstawie bazy udostępnionych fotografii do treningu. Dokumentacja biblioteki znajduje się pod poniższym linkiem:
@@ -10,7 +10,7 @@ Prezentacja projektu z wykorzystaniem możliwości Google Colaboratory została 
 
 https://github.com/Jakub-Pawinski-PP/WdSI_projekt/blob/main/road_signs_detection.ipynb
 
-Omówienie koncepcji bazuje na kodzie pochodzącym z main.py, natomiast wyniki poszczególnych funkcji pochodzą z powyższego. Różnice występują jedynie w ścieżkach projektowych.
+Omówienie koncepcji bazuje na kodzie pochodzącym z main.py.
 
 # Wymagane biblioteki
 
@@ -20,8 +20,9 @@ Pierwszymi krokami jest zaimportowanie wymaganych bibliotek oraz podanie uniwers
 import os
 from detecto import core, utils, visualize
 import numpy as np
+from PIL import Image
 ```
-Są to odpowiednio biblioteka os (do wyznaczenia ścieżek projektowych), funkcje z biblioteki Detecto używane w procesie uczenia oraz weryfikacji oraz numpy w projekcie filtru.
+Są to odpowiednio biblioteka os (do wyznaczenia ścieżek projektowych), funkcje z biblioteki Detecto używane w procesie uczenia oraz weryfikacji, numpy w projekcie filtru i konwersji tensora do tablicy oraz PIL do celów sprawdzenia wymiarów zdjęcia i wycinka z obiektem.
 
 Jeżeli biblioteka Detecto nie jest zainstalowana w systemie, należy posłużyć się komendą:
 
@@ -37,7 +38,7 @@ Zgodnie z wytycznymi dotyczącymi podziału katalogów zostały one podzielone n
 
 ```
 #sciezka calego projektu
-project_path = os.path.dirname(os.getcwd())
+project_path = os.getcwd()
 ```
 
 Ścieżka do zbioru treningowego:
@@ -193,14 +194,34 @@ def detect():
         for k in num_list_detect:
             labels_detect_filter.append(labels_detect[k])
 
-        #podanie nazwy obrazu, ilosci wykrytych obiektow oraz ich wspolrzednych
-        number_of_detected = len(labels_detect_filter)
-        print(detection)
-        print(number_of_detected)
-        print(boxes_detect_filter)        
+        #podanie ilosci wykrytych znakow ograniczenia predkosci oraz ich wspolrzednych
+        number_of_detected = labels_detect_filter.count('speedlimit')
+        boxes_array = np.around(boxes_detect_filter.numpy())
+        boxes_array = boxes_array.astype(int)
+
+        #sprawdzenie wymiarow zdjecia
+        is_big_enough = False
+
+        for l in labels_detect_filter:
+            img = Image.open(test_images_path + '/' + detection)
+            width = img.width
+            height = img.height
+            for m in range(number_of_detected):
+                detection_width = abs(boxes_array[m][2] - boxes_array[m][0])
+                detection_height = abs(boxes_array[m][3] - boxes_array[m][1])
+                is_big_enough = ((detection_width >= 1 / 10 * width) and (detection_height >= 1 / 10 * height))
+
+        #detekcja znakow ograniczenia predkosci
+        if 'speedlimit' in labels_detect_filter and is_big_enough:
+            print(detection)
+            print(number_of_detected)
+            for n in range(number_of_detected):
+                print(boxes_array[n][0], boxes_array[n][2], boxes_array[n][1], boxes_array[n][3])      
 ```
 
-Zmianie uległy elementy widoczne na wyjściu. Teraz ukazują się kolejno: nazwa odczytanego pliku, ilość obiektów wykrytych na zdjęciu oraz tensor ze współrzędnymi prostokąta/prostokątów z wykrytym obiektem/obiektami.
+W tej wersji programu zostały uwzględnione warunki dotyczące wycinka obrazu. Detekcja następuje w przypadku spełnienia dwóch warunków: obiekt jest typu "speedlimit" oraz szerokość i wysokość wycinka z obiektem zajmują co najmniej 1/10 szerokości i wysokości całego obrazu.
+
+Na wyjściu są wypisywane kolejno: nazwa obrazu, ilość wykrytych znaków ograniczenia prędkości oraz ich współrzędne.
 
 Wywołanie funkcji za pomocą standardowego wejścia zostało opatrzone poniższym kodem:
 
@@ -208,6 +229,33 @@ Wywołanie funkcji za pomocą standardowego wejścia zostało opatrzone poniższ
 x = input()
 if x == "detect":
     detect()
+```
+
+# Przykład wyjścia
+
+Po procesie uczenia i pojawieniu się na wejściu słowa "detect" początkowy fragment wyjścia przedstawia się następująco:
+
+```
+road660.png
+1
+131 193 189 251
+road661.png
+1
+116 192 218 296
+road662.png
+1
+78 125 152 199
+road663.png
+1
+103 161 214 272
+road664.png
+2
+85 158 201 274
+86 158 116 188
+road665.png
+2
+56 145 302 395
+54 146 194 286
 ```
 
 # Podsumowanie
