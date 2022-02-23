@@ -1,6 +1,7 @@
 import os
 from detecto import core, utils, visualize
 import numpy as np
+from PIL import Image
 
 #sciezka calego projektu
 project_path = os.getcwd()
@@ -97,11 +98,29 @@ def detect():
         for k in num_list_detect:
             labels_detect_filter.append(labels_detect[k])
 
-        #podanie nazwy obrazu, ilosci wykrytych obiektow oraz ich wspolrzednych
-        number_of_detected = len(labels_detect_filter)
-        print(detection)
-        print(number_of_detected)
-        print(boxes_detect_filter)
+        #podanie ilosci wykrytych znakow ograniczenia predkosci oraz ich wspolrzednych
+        number_of_detected = labels_detect_filter.count('speedlimit')
+        boxes_array = np.around(boxes_detect_filter.numpy())
+        boxes_array = boxes_array.astype(int)
+
+        #sprawdzenie wymiarow zdjecia
+        is_big_enough = False
+
+        for l in labels_detect_filter:
+            img = Image.open(test_images_path + '/' + detection)
+            width = img.width
+            height = img.height
+            for m in range(number_of_detected):
+                detection_width = abs(boxes_array[m][2] - boxes_array[m][0])
+                detection_height = abs(boxes_array[m][3] - boxes_array[m][1])
+                is_big_enough = ((detection_width >= 1 / 10 * width) and (detection_height >= 1 / 10 * height))
+
+        #detekcja znakow ograniczenia predkosci
+        if 'speedlimit' in labels_detect_filter and is_big_enough:
+            print(detection)
+            print(number_of_detected)
+            for n in range(number_of_detected):
+                print(boxes_array[n][0], boxes_array[n][2], boxes_array[n][1], boxes_array[n][3])
 
 x = input()
 if x == "detect":
