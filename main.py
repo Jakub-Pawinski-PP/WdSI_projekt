@@ -3,6 +3,48 @@ from detecto import core, utils, visualize
 import numpy as np
 from PIL import Image
 
+# TODO Jakość kodu i raport (4/4)
+
+
+# TODO Skuteczność detekcji 0.0 (0/6)
+
+# invalid output
+# stdout:
+# It looks like you're training your model on a CPU. Consider switching to a GPU; otherwise, this method can take hours upon hours or even days to finish. For more information, see https://detecto.readthedocs.io/en/latest/usage/quickstart.html#technical-requirements
+# Epoch 1 of 10
+# Begin iterating over training dataset
+# Epoch 2 of 10
+# Begin iterating over training dataset
+# Epoch 3 of 10
+# Begin iterating over training dataset
+# Epoch 4 of 10
+# Begin iterating over training dataset
+# Epoch 5 of 10
+# Begin iterating over training dataset
+# Epoch 6 of 10
+# Begin iterating over training dataset
+# Epoch 7 of 10
+# Begin iterating over training dataset
+# Epoch 8 of 10
+# Begin iterating over training dataset
+# Epoch 9 of 10
+# Begin iterating over training dataset
+# Epoch 10 of 10
+# Begin iterating over training dataset
+# road831.png
+# 1
+# 67 169 109 206
+# road669.png
+# 1
+# 112 156 170 211
+# road693.png
+# 2
+# 52 140 270 356
+# 54 143 134 221
+# road789.png
+# 1
+# 113 166 169 221
+
 #sciezka calego projektu
 project_path = os.getcwd()
 
