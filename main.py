@@ -67,7 +67,7 @@ dataset_train = core.Dataset(train_annotations_path, train_images_path)
 model = core.Model(['speedlimit', 'crosswalk', 'stop', 'trafficlight'])
 
 #trenowanie zbioru
-model.fit(dataset_train, epochs=10)
+model.fit(dataset_train, epochs=10, verbose=False)
 
 #zachowanie modelu sieci
 model.save('model_weights.pth')
